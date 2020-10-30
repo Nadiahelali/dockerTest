@@ -9,31 +9,31 @@ printf "\n"
 
 printf "starting postgres container --->\n"
 docker container run \
+    --rm \
     --detach \
     --name=db \
-    --env POSTGRES_PASSWORD= secret \
-    --env POSTGRES_DB= notesdb \
-    --volume ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    --env POSTGRES_PASSWORD=secret \
+    --env POSTGRES_DB=notesdb \
     --network=restless-api \
     postgres:12;
 printf "postgres container started --->\n"
 
 
-cd ..
 printf "\n"
 
-cd app;
+cd api;
 printf "creating api image --->\n"
-docker image build . --tag node-api;
+docker image build --tag node-api .;
 printf "api image created --->\n"
 printf "starting api container --->\n"
 docker container run \
+    --rm \
     --detach \
     --name=api \
     --env DB_PASSWORD=secret \
-    --env-file .env
+    --env-file .env \
     --network=restless-api \
-    --publish=3000:3000
+    --publish=3000:3000 \
     node-api;
 printf "api container started --->\n"
 
